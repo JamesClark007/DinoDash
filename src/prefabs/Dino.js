@@ -3,11 +3,20 @@ class Dino extends Phaser.GameObjects.Sprite {
     super(scene, x, y, texture, frame);
 
     scene.add.existing(this); // add to existing, displayList, updateList
-    this.moveSpeed = 2; // pixels per frame
+
+    scene.physics.world.enableBody(this); // Add the dino to the physics world
+    this.body.setCollideWorldBounds(true); // Prevent the dino from going off-screen
+    this.body.setGravityY(500); // Adjust the gravity to control the dino's fall speed
+    this.body.setSize(this.width * 0.5, this.height); 
+
+    this.moveSpeed = 4; // pixels per frame
     this.isJumping = false;
     this.jumpHeight = 100; // adjust to change jump height
     this.jumpDuration = 500; // adjust to change the duration of the jump
     this.groundY = y; // Store the ground level position
+    this.lives = 3;
+    this.doubleJump = false;
+    this.canDoubleJump = false;
 
     this.sfxJump = scene.sound.add('sfx_jump'); // add jump sfx
 }
@@ -32,6 +41,17 @@ class Dino extends Phaser.GameObjects.Sprite {
   }
 
   jump() {
+    if (this.isJumping && this.doubleJump && this.canDoubleJump) {
+      // Allow double jump
+      this.canDoubleJump = false;
+      this.sfxJump.play();
+    } else if (!this.isJumping) {
+      // Allow first jump
+      this.isJumping = true;
+      this.canDoubleJump = true;
+      this.sfxJump.play();
+    }
+  
       this.scene.tweens.add({
           targets: this,
           y: this.groundY - this.jumpHeight,
@@ -50,8 +70,21 @@ class Dino extends Phaser.GameObjects.Sprite {
           },
       });
   }
+  enableDoubleJump() {
+    this.doubleJump = true;
+    this.setTexture('dino_with_wings'); // Change the sprite's appearance
+  }
+  
 
   increaseSpeed() {
       this.moveSpeed += 1; // You can adjust this value to change the speed increase amount
   }
+
+  loseLife() {
+    this.lives -= 1;
+    if (this.lives <= 0) {
+      // Handle game over (e.g., show a game over screen or restart the game)
+    }
+  }
+  
 }
