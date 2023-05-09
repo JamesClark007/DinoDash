@@ -1,5 +1,5 @@
 class Dino extends Phaser.GameObjects.Sprite {
-  constructor(scene, x, y, texture, frame) {
+  constructor(scene, x, y, texture, frame, groundY) {
     super(scene, x, y, texture, frame);
 
     scene.add.existing(this); // add to existing, displayList, updateList
@@ -7,7 +7,10 @@ class Dino extends Phaser.GameObjects.Sprite {
     scene.physics.world.enableBody(this); // Add the dino to the physics world
     this.body.setCollideWorldBounds(true); // Prevent the dino from going off-screen
     this.body.setGravityY(500); // Adjust the gravity to control the dino's fall speed
-    this.body.setSize(this.width * 0.5, this.height); 
+    
+    this.body.setSize(this.width * 0.5, this.height * 0.5);
+    this.groundY = groundY;
+
 
     this.moveSpeed = 4; // pixels per frame
     this.isJumping = false;
@@ -38,6 +41,10 @@ class Dino extends Phaser.GameObjects.Sprite {
           this.sfxJump.play();
           this.jump();
       }
+      if (this.y > this.groundY) {
+        this.y = this.groundY;
+        this.body.velocity.y = 0;
+    }    
   }
 
   jump() {

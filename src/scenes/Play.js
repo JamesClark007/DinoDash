@@ -19,6 +19,7 @@ class Play extends Phaser.Scene {
 
     preload() {
         this.load.image('ground', 'assets/dino_background.png');
+        this.load.image('tree', './assets/tree.png');
         this.load.image('dino', 'assets/dino.png');
         this.load.image('rock', 'assets/rock.png');
         this.load.audio('sfx_jump', 'assets/dino_jump.mp3');
@@ -69,9 +70,14 @@ class Play extends Phaser.Scene {
 
 
     
-        this.dino = new Dino(this, game.config.width / 2, groundY, 'dino').setOrigin(0.5, 1);
+        this.dino = new Dino(this, game.config.width / 2,
+         groundY + 30, 'dino', groundY).setOrigin(0.5, 1);
 
         this.obstacles = new ObstacleGroup(this, groundY);
+
+        this.tree = new Tree(this, game.config.width,
+            groundY - 80, 'tree', 0, 10).setOrigin(0,0);
+        
 
 
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -165,9 +171,11 @@ class Play extends Phaser.Scene {
         
         if (!this.gameOver) {
             this.dino.update();
+            this.tree.update();
             this.ground.tilePositionX += 4;
             this.obstacles.update();
             this.physics.add.collider(this.dino, this.obstacles, this.hitObstacle, null, this);
+            this.physics.add.collider(this.dino, this.tree, this.hitObstacle, null, this);
     
             if (this.remainingTime <= 0 || this.dino.lives === 0) {
                 this.gameOver = true;

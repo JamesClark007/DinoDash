@@ -4,9 +4,13 @@
 
 // TODO
 
-// add obstacles
+// 1. fix the ground system
+
+// add obstacles X
+
+
 // add a power up that lets you double jump ./ wings that let you fly for the double jump
-// fix the timer
+// fix the timer, fix the game over menu
 
 // fix the easy and hard mode and add a medium mode, also maybe add an insane mode with 
 // ./ score multipliers for each difficulty
