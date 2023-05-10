@@ -14,7 +14,7 @@ class Dino extends Phaser.GameObjects.Sprite {
 
     this.moveSpeed = 4; // pixels per frame
     this.isJumping = false;
-    this.jumpHeight = 100; // adjust to change jump height
+    this.jumpHeight = 200; // adjust to change jump height
     this.jumpDuration = 500; // adjust to change the duration of the jump
     this.groundY = y; // Store the ground level position
     this.lives = 3;
@@ -89,9 +89,6 @@ class Dino extends Phaser.GameObjects.Sprite {
 
   loseLife() {
     this.lives -= 1;
-    if (this.lives <= 0) {
-      // Handle game over (e.g., show a game over screen or restart the game)
-    }
   }
   
 }

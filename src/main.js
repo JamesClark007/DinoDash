@@ -4,10 +4,7 @@
 
 // TODO
 
-// 1. fix the ground system
-
-// add obstacles X
-
+// make dino jump higher without changing the grondY x just change jumpheight
 
 // add a power up that lets you double jump ./ wings that let you fly for the double jump
 // fix the timer, fix the game over menu
@@ -40,12 +37,6 @@ let config = {
           debug: false,
       },
     },
-
-    callbacks: {
-      postBoot: function (game) {
-          game.registry.set('highScoreManager', highScoreManager);
-        }
-    }
   }
   
 let game = new Phaser.Game(config);

@@ -16,23 +16,28 @@ class PowerUp extends Phaser.GameObjects.Sprite {
       // Set the power up's animation based on its type
       switch (type) {
         case 'double-jump':
-          this.setTexture('doubleJumpPowerUp');
-          break;
+            this.setTexture('powerUpSpritesheet');
+            this.play('double-jump');
+            break;
         case 'fire-breath':
-          this.setTexture('fireBreathPowerUp');
-          break;
+            this.setTexture('powerUpSpritesheet');
+            this.play('fire-breath');
+            break;
         case 'fly':
-          this.setTexture('flyPowerUp');
-          break;
+            this.setTexture('powerUpSpritesheet');
+            this.play('fly');
+            break;
         case 'time':
-          this.setTexture('timePowerUp');
-          break;
+            this.setTexture('powerUpSpritesheet');
+            this.play('time');
+            break;
         default:
-          // If an invalid type is specified, default to the double jump power up
-          this.setTexture('doubleJumpPowerUp');
-          break;
-      }
+            // If an invalid type is specified, default to the double jump power up
+            this.setTexture('powerUpSpritesheet');
+            this.play('doubleJumpAnim');
+            break;
     }
+  }
   
     // Activate the power up
     activate(player) {
@@ -63,6 +68,8 @@ class PowerUp extends Phaser.GameObjects.Sprite {
   
     // Expire the power up
     expire(player) {
+      if (!this.active) return;
+
       switch (this.type) {
         case 'double-jump':
           player.canDoubleJump = false;
