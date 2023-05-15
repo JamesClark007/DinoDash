@@ -17,13 +17,13 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_explosion3', './assets/mixkit-arcade-game-explosion-2759.wav');
         this.load.audio('sfx_explosion4', './assets/mixkit-fast-game-explosion-1688.wav');
 
-        //this.load.image('menuBackground', './assets/menuBackground.png');
+        this.load.image('menuBackground', './assets/dino_background.png');
       }
     
     create() {
 
       // will use this later for the menu screen
-      // this.add.image(0, 0, 'menuBackground').setOrigin(0, 0);
+       this.add.image(0, 0, 'menuBackground').setOrigin(0, 0);
 
 
         let menuConfig = {
@@ -43,16 +43,12 @@ class Menu extends Phaser.Scene {
       - borderPadding, 'DINO DASH', menuConfig).setOrigin(0.5);
 
       menuConfig.fontSize = '24px';
-      this.add.text(game.config.width / 2, game.config.height / 2, 'Use <- -> arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
-      this.add.text(game.config.width / 2, game.config.height / 2 + 50, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
-
+      this.add.text(game.config.width / 2, game.config.height / 2, 'Use <- -> and UP arrows to move & (F) to use fire breath', menuConfig).setOrigin(0.5);
         
        // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-    //   this.scene.start("playScene");
-      
     }
 
     update() {

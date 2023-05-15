@@ -18,6 +18,10 @@ Overall, the game's technical aspects, such as power-ups and physics, and visual
 
 
 
+
+
+
+
 let config = {
     type: Phaser.AUTO,
     width: 800,
