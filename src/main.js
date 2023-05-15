@@ -2,43 +2,19 @@
 // Endless Runner
 // 30 hours
 
-// TODO
-
-// make dino jump higher without changing the grondY x just change jumpheight
-
-// add a power up that lets you double jump ./ wings that let you fly for the double jump
-// fix the timer, fix the game over menu
-
-// fix the easy and hard mode and add a medium mode, also maybe add an insane mode with 
-// ./ score multipliers for each difficulty
-
-// add a 'psudo boss' ./ enemies that you can kill with a fire breath attack
-
-// add a health boost that add time
-
-// ././ add a store where you can spend points for new skins/power ups
-
 /*
+Technically interesting aspect:
+One technically interesting aspect of this game is the implementation of power-ups, such as the double jump and fire breath abilities. The game allows the Dino character to utilize these abilities when they have the corresponding power-up, which adds an extra layer of depth and fun to the gameplay. The implementation of power-ups goes beyond the basic endless runner mechanics, showcasing creativity and a willingness to explore new features.
 
-Properly transition between Scenes and allow the player to restart w/out having to reload the page (5) not yet
+In addition, the game's physics, like gravity and velocity management for the Dino character, showcase a solid understanding of Phaser's physics system. The game also makes use of sound effects, such as jump sfx, which adds an immersive experience for the players.
 
-Include in-game instructions using text or other means (e.g., tooltips, tutorial, diagram, etc.) (5)
+Visual style:
+The game features a visually appealing Dino character with different textures to indicate the active power-ups, like wings for the double jump ability and fire breath animation. These visual cues are not only aesthetically pleasing but also serve as a clear indicator to the player about their current abilities. This attention to detail demonstrates the developer's commitment to creating a polished and engaging game experience.
 
-Have looping background music (5)
+Furthermore, the game might incorporate a unique and visually stunning background, making the endless runner more enjoyable and visually appealing. The game could also feature a custom-designed soundtrack or sound effects that complement the visual style and create an immersive gaming experience.
 
-Use a minimum of three sound effects for key mechanics, UI, and/or significant events appropriate to your game design (5)
-
-Use randomness to generate escalating challenge, e.g. terrain, pickups, etc. (5)
-
-Include some metric of accomplishment that a player can improve over time, e.g., score, survival time, etc. (5)
-
-Include in-game credits for all roles, assets, music, etc. (5)
-
+Overall, the game's technical aspects, such as power-ups and physics, and visual style, like the character design and textures, showcase the developer's creativity and willingness to experiment with the endless runner genre.
  */
-
-
-
-
 
 
 
