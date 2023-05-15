@@ -7,7 +7,7 @@ class Obstacle extends Phaser.GameObjects.Sprite {
       this.body.setImmovable(true);
       this.body.setAllowGravity(false);
       this.body.setSize(this.width, this.height); 
-      this.moveSpeed = 4; // pixels per frame
+      this.moveSpeed = 3; // pixels per frame
     }
   
     update() {
@@ -23,5 +23,5 @@ class Obstacle extends Phaser.GameObjects.Sprite {
     reset() {
       this.x = game.config.width;
   }
-  
+
 }

@@ -7,13 +7,27 @@ class Play extends Phaser.Scene {
             fontSize: '28px',
             backgroundColor: '#000000',
             color: '#FFFFFF',
-            align: 'right',
+            align: 'left',
             padding: {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 100
+            fixedWidth: 140
         };
+        this.HighScoreConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#000000',
+            color: '#FFFFFF',
+            align: 'left',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 240
+        };
+        this.powerUpIcons = [];
+        this.collectedPowerUps = [];
 
     }
 
@@ -22,8 +36,12 @@ class Play extends Phaser.Scene {
         this.load.image('tree', './assets/tree.png');
         this.load.image('dino', 'assets/dino.png');
         this.load.image('rock', 'assets/rock.png');
+        this.load.image('dino_fire', 'assets/dino_fire.png');
+
         this.load.audio('sfx_jump', 'assets/dino_jump.mp3');
+
         this.load.image('dino_with_wings', 'assets/dino_with_wings.png');
+
         this.load.spritesheet('rotating_orbs', 'assets/rotating_orbs.png', { frameWidth: 32, frameHeight: 32 });
         this.load.on('filecomplete', (key, type, data) => {
             if (key === 'rotating_orbs') {
@@ -62,29 +80,48 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+
+        this.timeSurvived = 0;
+
+        const storedHighScore = localStorage.getItem('highScore');
+        this.highScore = storedHighScore ? parseInt(storedHighScore) : 0;
+        this.highScoreText = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding, `High Score:${this.highScore}`, this.HighScoreConfig);
+
+        this.timerText = this.add.text(game.config.width - borderUISize - borderPadding - 150, borderUISize + borderPadding, `Time: ${this.timeSurvived}`, this.scoreConfig);
+
+        this.timeEvent = this.time.delayedCall(1000, this.increaseTimeSurvived, [], this);
+    
 
 
-        this.p1Score = 0;
+
+        //this.updateTimer();
+
+        this.timeEvent = this.time.addEvent({
+            delay: 1000,
+            callback: this.increaseTimeSurvived,
+            callbackScope: this,
+            loop: true
+        });
+        
+
+
+
+        // this.p1Score = 0;
         let collectedPowerUps = [];
-        this.collectedPowerUps = Array(4).fill(-1);
+        this.collectedPowerUps = Array(3).fill(-1);
 
         this.powerUpSpaces = [];
         this.powerUpSpaceWidth = 40;
         this.powerUpSpacePadding = 10;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 3; i++) {
             let spaceX = borderUISize + borderPadding + i * (this.powerUpSpaceWidth + this.powerUpSpacePadding);
             let spaceY = borderUISize + borderPadding + 60;
-            let space = this.add.circle(spaceX + this.powerUpSpaceWidth / 2, spaceY + this.powerUpSpaceWidth / 2, this.powerUpSpaceWidth / 2, 0xFFFFFF);
+            let space = this.add.circle(spaceX + this.powerUpSpaceWidth / 2, spaceY + this.powerUpSpaceWidth / 2, this.powerUpSpaceWidth / 2, 0x000000);
             this.powerUpSpaces.push(space);
         }
 
-
-
-        // const highScoreManager = this.registry.get('highScoreManager');
-
-        // if (highScoreManager.getHighScore() === 0) {
-        //     highScoreManager.setHighScore(0);
-        // }
+        
 
         this.livesText = this.add.text(borderUISize + borderPadding + 400, borderUISize + borderPadding * 2, `Life: ${this.dino.lives}`, {
             fontFamily: 'Courier',
@@ -93,7 +130,7 @@ class Play extends Phaser.Scene {
             color: '#FFFFFF',
             align: 'right',
             padding: { top: 5, bottom: 5 },
-            fixedWidth: 150
+            fixedWidth: 130
         });
         
 
@@ -110,7 +147,6 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         };
 
-
         // Define the animation for each power-up orb
         this.anims.create({
             key: 'double-jump',
@@ -118,64 +154,62 @@ class Play extends Phaser.Scene {
             frameRate: 8,
             repeat: -1
         });
-    
+
         this.anims.create({
             key: 'fire-breath',
             frames: this.anims.generateFrameNumbers('rotating_orbs', { start: 4, end: 7 }),
             frameRate: 8,
             repeat: -1
         });
-    
+
         this.anims.create({
-            key: 'fly',
+            key: 'time',
             frames: this.anims.generateFrameNumbers('rotating_orbs', { start: 8, end: 11 }),
             frameRate: 8,
             repeat: -1
         });
-    
-        this.anims.create({
-            key: 'time',
-            frames: this.anims.generateFrameNumbers('rotating_orbs', { start: 12, end: 15 }),
-            frameRate: 8,
-            repeat: -1
-        });
-    
-        
 
-    //     this.scoreLeft = this.add.text(borderUISize + borderPadding,
-    //         borderUISize + borderPadding*2, this.p1Score, this.scoreConfig);
 
-    //    this.highScoreText = this.add.text(borderUISize + borderPadding + 200,
-    //        borderUISize + borderPadding*2,
-    //        `${highScoreManager.getHighScore()}`, this.scoreConfig);
-
-        
 
         this.gameOver = false;
-
-        // scoreConfig.fixedWidth = 0;
         
-
-        this.remainingTime = game.settings.gameTimer;
-
-        this.updateTimer();
-
-        this.timeEvent = this.time.addEvent({
-            delay: 1000,
-            callback: this.decreaseRemainingTime,
-            callbackScope: this,
-            loop: true
-        });
     }
+
+    fireBreath() {
+        if (this.dino.hasFireBreathPowerUp) {
+          this.dino.fire(500);
+          this.tree.reset();
+        }
+    }
+
+
+    updateTimer() {
+        this.timerText.setText(`Time: ${this.timeSurvived}`);
+    }
+
+    increaseTimeSurvived() {
+        if (this.dino.timeBoost) {
+          this.timeSurvived += 3; // Increase the time by 2 when the time power-up is active
+        } else {
+          this.timeSurvived += 1; // Default increment of 1 second
+        }
+        this.updateTimer();
+      }
+      
+    
+
+
+
     update() {
         if (this.gameOver || this.dino.lives === 0) {
-            //const highScoreManager = this.registry.get('highScoreManager');
             this.gameOver = true;
-            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', this.scoreConfig).setOrigin(0.5);
-            this.timeEvent.remove();
+            this.highScore = Math.max(this.highScore, this.timeSurvived);
+            this.highScoreText.setText(`High Score:${this.highScore}`);
 
-            
-            // highScoreManager.setHighScore(this.p1Score);
+            // Store the high score in local storage
+            localStorage.setItem('highScore', this.highScore.toString());
+
+            this.timeEvent.remove();
             this.scene.restart();
         }
 
@@ -186,123 +220,164 @@ class Play extends Phaser.Scene {
             this.ground.tilePositionX += 4;
             this.obstacles.update();
 
+
             this.powerUps.children.each(powerUp => {
                 if (powerUp.x <= 0 - powerUp.width) {
                     powerUp.destroy();
                 }
             });
+            if (Phaser.Input.Keyboard.JustDown(keyUP)) {
+                this.dino.jump();
+              }
+            
+            
+            if (Phaser.Input.Keyboard.JustDown(keyF)) {
+                if (this.dino.hasFireBreathPowerUp) {
+                    this.dino.fire(500);
+                    let dinoBounds = this.dino.getBounds();
+                    let treeBounds = this.tree.getBounds();
+                    if (Phaser.Geom.Intersects.RectangleToRectangle(dinoBounds, treeBounds)) {
+                        this.tree.reset();
+                    }
+                }
+            }
+            
+              
 
-            if (Math.random() < 0.06) {
+            if (Math.random() < 0.015) {
                 this.powerUps.spawnPowerUp();
             }
-    
-
 
     
-            if (this.remainingTime <= 0 || this.dino.lives === 0) {
+            if (this.dino.lives === 0) {
                 this.gameOver = true;
                 this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
                 this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or LEFT ARROW for Menu', scoreConfig).setOrigin(0.5);
                 this.timeEvent.remove();
             }
         }
+    
     }
     
+    
         
-        updateTimer() {
-            let timeText = this.remainingTime.toString();
-            this.timeText = this.add.text(game.config.width - borderUISize - borderPadding - 100, borderUISize + borderPadding * 2, timeText, {
-                fontFamily: 'Courier',
-                fontSize: '28px',
-                backgroundColor: '#000000',
-                color: '#FFFFFF',
-                align: 'right',
-                padding: { top: 5, bottom: 5 },
-                fixedWidth: 100
-            });
-        }
 
         updateLives() {
             this.livesText.text = `Life: ${this.dino.lives}`;
         }
           
         
-        decreaseRemainingTime() {
-            this.remainingTime -= 1;
-            this.timeText.destroy();
-            this.updateTimer();
+
+        
+        resetPowerUpDisplay() {
+            // Clear existing power-up icons
+            for (let i = 0; i < this.powerUpIcons.length; i++) {
+                if (this.powerUpIcons[i] !== null) {
+                    this.powerUpIcons[i].destroy();
+                    this.powerUpIcons[i] = null;
+                }
+            }
+        
+            // Reset collectedPowerUps array
+            this.collectedPowerUps = Array(3).fill(-1);
         }
+        
         
         hitObstacle(dino, obstacle) {
             if (obstacle instanceof Tree) {
                 obstacle.reset();
+            } else {
+                obstacle.destroy();
             }
-            else{
-                obstacle.destroy(); // this
-            }
-
             dino.loseLife();
+            dino.removeAllPowerUps();
             this.updateLives();
-
+            this.resetPowerUpDisplay(); // Add this line
         }
         
-        // addScore(points) {
-        //     this.p1Score += points;
-        //     this.scoreLeft.text = this.p1Score;
-        //     if (this.p1Score > this.registry.get('highScoreManager').getHighScore()) {
-        //         this.highScoreText.text = this.p1Score;
-        //     }
-        // }
-
-        generatePowerUpOrb(index) {
-            let spaceX = borderUISize + borderPadding + index * (this.powerUpSpaceWidth + this.powerUpSpacePadding);
-            let spaceY = borderUISize + borderPadding + 40; // Same Y value as the power-up spaces
-            let orb = this.add.sprite(spaceX + this.powerUpSpaceWidth / 2, spaceY + this.powerUpSpaceWidth / 2, 'rotating_orbs').setOrigin(0.5, 0.5);
-            orb.anims.play(`powerUpOrb${index + 1}`);
-            return orb;
-        }
-
-        updatePowerUpUI() {
-            for (let i = 0; i < this.collectedPowerUps.length; i++) {
-                let powerUpType = this.collectedPowerUps[i];
-                if (powerUpType !== -1) {
-                    this.powerUpSpaces[i].destroy();
-                    let spaceX = borderUISize + borderPadding + i * (this.powerUpSpaceWidth + this.powerUpSpacePadding);
-                    let spaceY = borderUISize + borderPadding + 60;
-                    let space = this.add.sprite(spaceX + this.powerUpSpaceWidth / 2, spaceY + this.powerUpSpaceWidth / 2, 'rotating_orbs').setOrigin(0.5, 0.5);
-                    
-                    switch (powerUpType) {
-                        case 0:
-                            space.anims.play('double-jump');
-                            break;
-                        case 1:
-                            space.anims.play('fire-breath');
-                            break;
-                        case 2:
-                            space.anims.play('fly');
-                            break;
-                        case 3:
-                            space.anims.play('time');
-                            break;
-                    }
-                    
-                    this.powerUpSpaces[i] = space;
-                }
-            }
-        }
         
-
         collectPowerUp(dino, powerUp) {
-            // Add collection logic here
             powerUp.activate(dino);
-            powerUp.destroy();
+        
+            // Check if the collected power-up has higher priority
+            let replaceIndex = -1;
             for (let i = 0; i < this.collectedPowerUps.length; i++) {
-                if (this.collectedPowerUps[i] === -1) {
-                    this.collectedPowerUps[i] = powerUp.powerUpType;
+                if (this.collectedPowerUps[i] === -1 || powerUp.powerUpType < this.collectedPowerUps[i]) {
+                    replaceIndex = i;
                     break;
                 }
             }
-            this.updatePowerUpUI();
+            if (replaceIndex === -1) {
+                powerUp.destroy();
+                return;
+            }
         
+            // Deactivate the previous power-up
+            switch (this.collectedPowerUps[replaceIndex]) {
+                case 1:
+                    dino.hasFireBreathPowerUp = false;
+                    break;
+                case 2:
+                    dino.hasDoubleJumpPowerUp = false;
+                    break;
+            }
+        
+            // Activate the new power-up
+            dino.activePowerUpType = powerUp.powerUpType;
+
+            switch (powerUp.powerUpType) {
+                case 1:
+                    dino.hasFireBreathPowerUp = true;
+                    keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F, this.fireBreath, null, this);
+                    break;
+                case 2:
+                    dino.hasDoubleJumpPowerUp = true;
+                    break;
+            }
+        
+            this.collectedPowerUps[replaceIndex] = powerUp.powerUpType;
+            powerUp.destroy();
+            this.updatePowerUpDisplay();
         }
+        
+          
+        
+
+        updatePowerUpDisplay(powerUp) {
+            // Clear existing power-up icons
+            for (let i = 0; i < this.powerUpIcons.length; i++) {
+                if (this.powerUpIcons[i] !== null) {
+                    this.powerUpIcons[i].destroy();
+                    this.powerUpIcons[i] = null;
+                }
+            }
+        
+            // Add corresponding power-up icons
+            for (let i = 0; i < this.collectedPowerUps.length; i++) {
+                console.log(this.collectedPowerUps[i]);
+
+                let powerUpType = this.collectedPowerUps[i]; // this always outputs -1
+                if (powerUpType !== -1) {
+                    let spaceX = borderUISize + borderPadding + i * (this.powerUpSpaceWidth + this.powerUpSpacePadding);
+                    let spaceY = borderUISize + borderPadding + 60;
+                    let icon = this.add.sprite(spaceX + this.powerUpSpaceWidth / 2, spaceY + this.powerUpSpaceWidth / 2, 'rotating_orbs').setOrigin(0.5, 0.5);
+                    console.log(powerUpType);
+                    switch (powerUpType) {
+                        case 0:
+                            icon.anims.play('double-jump');
+                            break;
+                        case 1:
+                            icon.anims.play('fire-breath');
+                            break;
+                        case 2:
+                            icon.anims.play('time');
+                            break;
+                    }
+        
+                    this.powerUpIcons[i] = icon;
+                }
+            }
+        }
+        
+
 }        

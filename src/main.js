@@ -18,6 +18,24 @@
 
 // ././ add a store where you can spend points for new skins/power ups
 
+/*
+
+Properly transition between Scenes and allow the player to restart w/out having to reload the page (5) not yet
+
+Include in-game instructions using text or other means (e.g., tooltips, tutorial, diagram, etc.) (5)
+
+Have looping background music (5)
+
+Use a minimum of three sound effects for key mechanics, UI, and/or significant events appropriate to your game design (5)
+
+Use randomness to generate escalating challenge, e.g. terrain, pickups, etc. (5)
+
+Include some metric of accomplishment that a player can improve over time, e.g., score, survival time, etc. (5)
+
+Include in-game credits for all roles, assets, music, etc. (5)
+
+ */
+
 
 
 
